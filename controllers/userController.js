@@ -1,5 +1,5 @@
-const { ObjectId } = require("mongoose").Types;
-const { User } = require("../models");
+const { ObjectId } = require('mongoose').Types;
+const { User } = require('../models');
 
 const createUser = async (req, res) => {
   try {
@@ -32,13 +32,26 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const user = await User.findOneAndUpdate({ id: req.params.id }, req.body);
-    await getUserById(req, res);
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.json(user);
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
 };
+
+// const updateUser = async (req, res) => {
+//   try {
+//     const user = await User.findOneAndUpdate({ id: req.params.id }, req.body);
+//     await getUserById(req, res);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send(err);
+//   }
+// };
 
 const deleteUser = async (req, res) => {
   try {

@@ -1,4 +1,4 @@
-const { Thought, User } = require("../models");
+const { Thought, User } = require('../models');
 
 const getAllThoughts = async (req, res) => {
   try {
@@ -37,18 +37,31 @@ const getThoughtById = async (req, res) => {
 
 const updateThought = async (req, res) => {
   try {
-    let thought = await Thought.findOneAndUpdate(
-      { id: req.params.id },
-      req.body
-    );
-
-    thought = await Thought.findById(req.params.id);
-    res.send(thought);
+    const thought = await Thought.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.json(thought);
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
 };
+
+// const updateThought = async (req, res) => {
+//   try {
+//     let thought = await Thought.findOneAndUpdate(
+//       { id: req.params.id },
+//       req.body
+//     );
+
+//     thought = await Thought.findById(req.params.id);
+//     res.send(thought);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send(err);
+//   }
+// };
 
 const deleteThought = async (req, res) => {
   try {
