@@ -1,54 +1,91 @@
-const User = require('../models/User');
+const { ObjectId } = require("mongoose").Types;
+const { User } = require("../models");
+
+const createUser = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const user = await User.find({});
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate({ id: req.params.id }, req.body);
+    await getUserById(req, res);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findOneAndRemove({ _id: req.params.id });
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
+
+const addFriend = async (req, res) => {
+  try {
+    let user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    );
+    user = await User.findById(req.params.userId);
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
+
+const removeFriend = async (req, res) => {
+  try {
+    let user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    );
+    user = await User.findById(req.params.userId);
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
 
 module.exports = {
-    //GET ALL users
-    getUsers(req, res) {
-        User.find()
-            .then((users) => res.json(users))
-            .catch((err) => res.status(500).json(err));
-    },
-
-    //GET a user
-    getSingleUser(req, res) {
-        User.findOne({ _id: req.params.userId })
-            .select('-__v')
-            .then((user) =>
-                !user
-                    ? res.status(404).json({ message: 'No user with that ID' })
-                    : res.json(user)
-            )
-            .catch((err) => res.status(500).json(err));
-    },
-
-    // CREATE a new user
-    createUser(req, res) {
-        User.create(req.body)
-            .then((dbUserData) => res.json(dbUserData))
-            .catch((err) => res.status(500).json(err));
-    },
-
-    // DELETE a user
-    deleteUser(req, res) {
-        userModel.findByIdAndDelete(req.params.id).exec()
-            .then((user) =>
-                !user
-                    ? res.status(404).json({ message: 'No user with that ID' })
-                    : false
-            )
-            .then(() => res.json({ message: 'user deleted!' }))
-            .catch((err) => res.status(500).json(err));
-    },
-    // UPDATE a user
-    updateUser(req, res) {
-        userModel.findByIdAndUpdate(req.params.id,
-            { $set: req.body },
-            { runValidators: true, new: true }
-        )
-            .then((user) =>
-                !user
-                    ? res.status(404).json({ message: 'No user with this id!' })
-                    : res.json(user)
-            )
-            .catch((err) => res.status(500).json(err));
-    },
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  addFriend,
+  removeFriend,
 };
