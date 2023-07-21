@@ -17,7 +17,10 @@ The challenge for this project was to build a Social Network API using express.j
 
 GitHub repository: https://github.com/LauSmi/NoSQL-social-network-API
 
-Link to video walk-through: 
+Link to video walk-through: https://youtu.be/_pAabBXzlVE
+
+![Alt text](<Screenshot 2023-07-21 143838.png>)
+
 
 ## Installation
 
